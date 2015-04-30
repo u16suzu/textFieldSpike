@@ -18,25 +18,31 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.count=1;
+    self.count = 0;
+    
+    // Notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification object:nil];
+
+}
+
+-(void)keyboardWillShow:(NSNotification*)note{
+    // キーボードの表示開始時の場所と大きさを取得します。
+    CGRect keyboardFrameBegin = [[note.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    
+    // キーボードの表示完了時の場所と大きさを取得します。
+    CGRect keyboardFrameEnd = [[note.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
 }
 
 #pragma mark - Delegate Methods
 
-- (void)textViewDidChange:(UITextView *)textView{
-//    NSLog(@"%@", textView.text );
-}
-
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
-    NSLog(@"%@", text );
-    
     if ([text isEqualToString:@"\n"]) {
-        self.count++;
-        NSLog(@"%@", @"OK" );
-
-        NSLog(@"%@", self.textView.constraints );
-        
-        self.textViewHeightConstraint.constant = self.count*30;
+        if( self.count < 3 ){
+            self.count++;
+            self.textViewHeightConstraint.constant += 20;
+        }
     }
     
     return YES;
